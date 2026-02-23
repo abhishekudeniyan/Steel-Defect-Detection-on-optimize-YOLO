@@ -1,0 +1,13 @@
+path: data/processed
+train: images/train
+val: images/val
+
+nc: 6
+names:
+  - crazing
+  - inclusion
+  - patches
+  - pitted_surface
+  - rolled_in_scale
+  - scratches
+  

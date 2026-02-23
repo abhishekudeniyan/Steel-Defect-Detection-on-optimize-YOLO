@@ -1,0 +1,29 @@
+# Python
+__pycache__/
+*.pyc
+.python-version
+
+# Dataset
+data/raw/
+data/processed/
+*.zip
+
+# Training logs (ignore raw runs)
+runs/
+
+# Model weights
+*.pt
+*.pth
+*.onnx
+*.weights
+
+# Ignore only weights inside results
+results/weights/
+
+# Keep metrics and plots (DO NOT ignore these)
+# results/metrics/
+# results/plots/
+
+# Logs
+*.log
+.ipynb_checkpoints/

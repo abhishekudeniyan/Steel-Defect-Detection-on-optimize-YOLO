@@ -1,0 +1,9 @@
+model: yolov8n.pt
+image_size: 640
+batch_size: 6
+epochs: 60
+learning_rate: 0.001
+optimizer: SGD
+device: cuda
+patience: 10
+experiment_name: baseline_v1
