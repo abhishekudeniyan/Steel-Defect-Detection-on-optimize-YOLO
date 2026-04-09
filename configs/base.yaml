@@ -1,9 +1,24 @@
-model: yolov8n.pt
-image_size: 640
-batch_size: 6
-epochs: 60
-learning_rate: 0.001
-optimizer: SGD
-device: cuda
-patience: 10
-experiment_name: baseline_v1
+model: models\yolov8n_spd_p3_V2.yaml
+
+training:
+  imgsz: 320
+  batch: 6
+  epochs: 120
+  optimizer: AdamW
+  lr0: 0.001
+  mosaic: 0
+  patience: 15
+  workers: 2
+  amp: true
+  cos_lr: true
+  warmup_epochs: 5
+     # freeze backbone layers
+
+
+experiment:
+  name: P3_V2_SPD_YOLO__320px_AdamW_cos_lr_120epochs
+  seeds: [0,1,2]
+  project_dir: runs/detect/experiments
+
+data:
+  config: configs/data.yaml

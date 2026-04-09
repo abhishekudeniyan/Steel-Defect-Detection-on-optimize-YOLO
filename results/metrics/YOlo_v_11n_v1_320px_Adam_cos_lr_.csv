@@ -1,0 +1,2 @@
+seed,mAP50,mAP50_95,precision,recall,training_time_sec,gpu_memory_gb,model_size_mb,early_stopping,experiment
+0,0.76669,0.44232,0.73018,0.70688,5314.044267654419,0.5544872283935547,5.188006401062012,True,YOlo_v_11n_v1_320px_Adam_cos_lr_

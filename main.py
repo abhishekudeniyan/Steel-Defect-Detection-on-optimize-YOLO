@@ -34,6 +34,7 @@ def train_pipeline(config):
         batch=config["batch_size"],
         lr0=config["learning_rate"],
         optimizer=config["optimizer"],
+        mosaic=config["mosaic"],
         device=config["device"],
         patience=config["patience"],  # Early stopping
         project="experiments",

@@ -1,0 +1,2 @@
+seed,mAP50,mAP50_95,precision,recall,training_time_sec,gpu_memory_gb,model_size_mb,early_stopping,experiment
+3,0.74777,0.40552,0.69819,0.68506,5596.812442064285,0.7812018394470215,5.383212089538574,True,P3_SPD_YOLO__480px_AdamW_cos_lr_150epochs

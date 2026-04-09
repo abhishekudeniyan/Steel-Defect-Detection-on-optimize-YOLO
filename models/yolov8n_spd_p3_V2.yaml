@@ -1,0 +1,46 @@
+# models/yolov8n_spd_p3_V2.yaml
+
+# YOLOv8n with SPDConv replacing P3  with kernal = 3 and expansion = 2
+
+nc: 6
+
+scales:
+  n: [0.33, 0.25, 1024]
+
+backbone:
+  - [-1, 1, Conv, [64, 3, 2]]      # → 16
+  - [-1, 1, Conv, [128, 3, 2]]     # → 32
+  - [-1, 3, C2f, [128, True]]      # → 32
+
+  # P3
+  - [-1, 1, SPDConvK3, [32, 32]]    # → 32
+  - [-1, 6, C2f, [128, True]]       # → 128
+
+  # P4
+  - [-1, 1, Conv, [256, 3, 2]]     # → 128
+  - [-1, 6, C2f, [512, True]]      # → 128
+
+  # P5
+  - [-1, 1, Conv, [512, 3, 2]]     # → 256
+  - [-1, 3, C2f, [1024, True]]     # → 256
+
+  - [-1, 1, SPPF, [1024, 5]]      # → 256
+
+head:
+  - [-1, 1, nn.Upsample, [None, 2, nearest]]
+  - [[-1, 6], 1, Concat, [1]]
+  - [-1, 3, C2f, [512]]
+
+  - [-1, 1, nn.Upsample, [None, 2, nearest]]
+  - [[-1, 4], 1, Concat, [1]]
+  - [-1, 3, C2f, [256]]
+
+  - [-1, 1, Conv, [256, 3, 2]]
+  - [[-1, 12], 1, Concat, [1]]
+  - [-1, 3, C2f, [512]]
+
+  - [-1, 1, Conv, [512, 3, 2]]
+  - [[-1, 9], 1, Concat, [1]]
+  - [-1, 3, C2f, [1024]]
+
+  - [[15, 18, 21], 1, Detect, [nc]]

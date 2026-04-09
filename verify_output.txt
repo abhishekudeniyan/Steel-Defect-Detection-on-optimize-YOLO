@@ -1,0 +1,92 @@
+[register_modules] SPDConv registered successfully.
+[register_modules] SPDConv registered successfully.
+==========================================================
+  YOLO Architecture Verification
+==========================================================
+
+Loading baseline YOLOv8n for parameter comparison...
+Baseline: 3,157,200 params (3.157 M)
+
+----------------------------------------------------------
+  Architecture : models\yolov8n_spd_full(P3_p4_p5).yaml
+  Input size   : 640 x 640
+----------------------------------------------------------
+  [OK] Model built from YAML successfully
+  [OK] Parameters: 1,926,066  (1.926 M)
+       vs baseline YOLOv8n: -1,231,134 params  (-39.0%)
+  [WARN] Large parameter delta (-39.0%)
+         Investigate: check channel args in your YAML backbone section
+  [OK] Forward pass completed without errors
+       Detection head input shapes (per scale):
+         P3/8  (detects small objects  ~10-30px): (1, 70, 80, 80)
+         P4/16 (detects medium objects ~30-80px): (1, 70, 40, 40)
+         P5/32 (detects large objects  >80px   ): (1, 70, 20, 20)
+
+  [PASSED] Architecture is valid ΓÇö safe to begin training.
+
+
+----------------------------------------------------------
+  Architecture : models\yolov8n_spd_p3.yaml
+  Input size   : 640 x 640
+----------------------------------------------------------
+  [OK] Model built from YAML successfully
+  [OK] Parameters: 2,714,354  (2.714 M)
+       vs baseline YOLOv8n: -442,846 params  (-14.0%)
+  [OK] Forward pass completed without errors
+       Detection head input shapes (per scale):
+         P3/8  (detects small objects  ~10-30px): (1, 70, 80, 80)
+         P4/16 (detects medium objects ~30-80px): (1, 70, 40, 40)
+         P5/32 (detects large objects  >80px   ): (1, 70, 20, 20)
+
+  [PASSED] Architecture is valid ΓÇö safe to begin training.
+
+
+----------------------------------------------------------
+  Architecture : models\yolov8n_spd_p3_V2.yaml
+  Input size   : 640 x 640
+----------------------------------------------------------
+SPD input: torch.Size([1, 32, 64, 64])
+After SPD: torch.Size([1, 128, 32, 32])
+After Conv: torch.Size([1, 32, 32, 32])
+  [OK] Model built from YAML successfully
+  [OK] Parameters: 2,747,122  (2.747 M)
+       vs baseline YOLOv8n: -410,078 params  (-13.0%)
+SPD input: torch.Size([1, 32, 160, 160])
+After SPD: torch.Size([1, 128, 80, 80])
+After Conv: torch.Size([1, 32, 80, 80])
+  [OK] Forward pass completed without errors
+       Detection head input shapes (per scale):
+         P3/8  (detects small objects  ~10-30px): (1, 70, 80, 80)
+         P4/16 (detects medium objects ~30-80px): (1, 70, 40, 40)
+         P5/32 (detects large objects  >80px   ): (1, 70, 20, 20)
+
+  [PASSED] Architecture is valid ΓÇö safe to begin training.
+
+
+----------------------------------------------------------
+  Architecture : models\yolov8n_spd_p3_p4.yaml
+  Input size   : 640 x 640
+----------------------------------------------------------
+  [OK] Model built from YAML successfully
+  [OK] Parameters: 1,991,730  (1.992 M)
+       vs baseline YOLOv8n: -1,165,470 params  (-36.9%)
+  [WARN] Large parameter delta (-36.9%)
+         Investigate: check channel args in your YAML backbone section
+  [OK] Forward pass completed without errors
+       Detection head input shapes (per scale):
+         P3/8  (detects small objects  ~10-30px): (1, 70, 80, 80)
+         P4/16 (detects medium objects ~30-80px): (1, 70, 40, 40)
+         P5/32 (detects large objects  >80px   ): (1, 70, 20, 20)
+
+  [PASSED] Architecture is valid ΓÇö safe to begin training.
+
+==========================================================
+  SUMMARY
+==========================================================
+  [PASSED]  models\yolov8n_spd_full(P3_p4_p5).yaml
+  [PASSED]  models\yolov8n_spd_p3.yaml
+  [PASSED]  models\yolov8n_spd_p3_V2.yaml
+  [PASSED]  models\yolov8n_spd_p3_p4.yaml
+
+  All architectures passed. Ready to run experiments.
+==========================================================
