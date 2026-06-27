@@ -1,13 +1,13 @@
-model: models\yolov8n_spd_p3_V2.yaml
+model: models\Baselineyolov8nano.yaml
 
 training:
-  imgsz: 320
+  imgsz: 480
   batch: 6
-  epochs: 120
+  epochs: 150
   optimizer: AdamW
   lr0: 0.001
   mosaic: 0
-  patience: 15
+  patience: 20
   workers: 2
   amp: true
   cos_lr: true
@@ -16,7 +16,7 @@ training:
 
 
 experiment:
-  name: P3_V2_SPD_YOLO__320px_AdamW_cos_lr_120epochs
+  name: Baseline__YOLO_v8n_480px_AdamW_cos_lr_150epochs
   seeds: [0,1,2]
   project_dir: runs/detect/experiments
 

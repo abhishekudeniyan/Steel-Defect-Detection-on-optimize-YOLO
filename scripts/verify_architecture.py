@@ -18,6 +18,7 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 # CRITICAL ORDER: register custom modules BEFORE importing YOLO.
 # Python caches module namespaces on first import. If ultralytics loads
 # before we inject SPDConv, the YAML parser will never find it.
+
 from src.register_modules import register_custom_modules
 register_custom_modules()
 

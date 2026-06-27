@@ -10,17 +10,18 @@ def log_metrics(experiment_name, metrics_dict):
     exp_file = results_path / f"{experiment_name}.csv"
     master_file = results_path / "all_experiments.csv"
 
+    # Add experiment name
     metrics_dict["experiment"] = experiment_name
 
     fieldnames = list(metrics_dict.keys())
 
     def write_csv(csv_file):
-
         file_exists = csv_file.exists()
 
         with open(csv_file, "a", newline="") as f:
             writer = csv.DictWriter(f, fieldnames=fieldnames)
 
+            # Write header only once
             if not file_exists:
                 writer.writeheader()
 

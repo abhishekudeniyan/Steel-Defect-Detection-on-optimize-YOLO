@@ -14,8 +14,8 @@ backbone:
   - [-1, 3, C2f, [128, True]]      # → 32
 
   # SPD (FIXED)
-  - [-1, 1, SPDConv, [32, 32]]     # ← FIX HERE
-  - [-1, 6, C2f, [128, True]]      # ← KEEP ORIGINAL
+  - [-1, 1, SPDConv, [256]]     # ← FIX HERE
+  - [-1, 6, C2f, [256, True]]      # ← KEEP ORIGINAL
 
   - [-1, 1, Conv, [256, 3, 2]]     # → 128
   - [-1, 6, C2f, [512, True]]      # → 128
