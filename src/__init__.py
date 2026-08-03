@@ -6,7 +6,7 @@ This package contains custom PyTorch modules and utilities for YOLO model extens
 """
 
 # Import custom modules
-from .spd_conv import SPDConv, SPD2, SPDHybrid, SPDHybrid_NO_Fuse
+from .spd_conv import SPDConv, SPD2, SPDHybrid, SPDHybrid_NO_Fuse, DKStem
 from .custom_modules import M_C3k2, WeightedConcat, HybridSPDConv_3
 
 # Import utilities
@@ -24,6 +24,7 @@ __all__ = [
     "SPD2",
     "SPDHybrid",
     "SPDHybrid_NO_Fuse",
+    "DKStem",
     # Custom modules
     "M_C3k2",
     "WeightedConcat",

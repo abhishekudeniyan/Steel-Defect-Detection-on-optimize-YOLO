@@ -10,7 +10,7 @@ import src
 import pathlib 
 import ultralytics.nn.modules as _ultralytics_modules
 import ultralytics.nn.tasks as _tasks
-from src.spd_conv import  SPDConv, SPD2,SPDHybrid,SPDHybrid_NO_Fuse
+from src.spd_conv import  SPDConv, SPD2,SPDHybrid,SPDHybrid_NO_Fuse,DKStem
 from src.custom_modules import M_C3k2, WeightedConcat, HybridSPDConv_3
 
 
@@ -31,6 +31,7 @@ def register_custom_modules():
     _ultralytics_modules.__dict__["SPD2"] = SPD2
     _ultralytics_modules.__dict__["SPDHybrid"] = SPDHybrid
     _ultralytics_modules.__dict__["HybridSPDConv_3"] = HybridSPDConv_3
+    _ultralytics_modules.__dict__["DKStem"] = DKStem
     _ultralytics_modules.__dict__["SPDHybrid_NO_Fuse"] = SPDHybrid_NO_Fuse
 
 
@@ -47,6 +48,7 @@ def register_custom_modules():
     _tasks.__dict__["SPD2"] = SPD2
     _tasks.__dict__["SPDHybrid"] = SPDHybrid
     _tasks.__dict__["HybridSPDConv_3"] = HybridSPDConv_3
+    _tasks.__dict__["DKStem"] = DKStem
     _tasks.__dict__["SPDHybrid_NO_Fuse"] = SPDHybrid_NO_Fuse
 
 

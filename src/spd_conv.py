@@ -51,7 +51,147 @@ class SPDConv(nn.Module):
         return self.conv(x)
 
 
+class DKStem(nn.Module):
+    """
+    ------------------------------------------------------------------
+    Dual-Kernel Stem (Improved Version)
 
+    Branch A:
+        Conv(3x3, stride=2)
+        BN
+        SiLU
+
+    Branch B:
+        DWConv(5x5 , stride=2)
+        BN
+        SiLU
+
+        DWConv(5x5, stride=1)
+        BN
+        SiLU
+
+        PWConv(1x1)
+        BN
+        SiLU
+
+    Fusion:
+        Concat
+        PWConv(1x1)
+        BN
+        SiLU
+    ------------------------------------------------------------------
+    """
+
+    def __init__(self, c1, c2, debug=False):
+        super().__init__()
+
+        self.debug = debug
+        c_half = c2 // 2
+
+        # ---------------------------------------------------
+        # Branch 1 (Local Features)
+        # ---------------------------------------------------
+        self.branch1 = nn.Sequential(
+            nn.Conv2d(
+                c1,
+                c_half,
+                kernel_size=3,
+                stride=2,
+                padding=1,
+                bias=False
+            ),
+            nn.BatchNorm2d(c_half),
+            nn.SiLU(inplace=True)
+        )
+
+        # ---------------------------------------------------
+        # Branch 2 (Large Receptive Field)
+        # ---------------------------------------------------
+        self.branch2 = nn.Sequential(
+
+            # 5x5 DWConv (Downsample)
+            nn.Conv2d(
+                c1,
+                c1,
+                kernel_size=5,
+                stride=2,
+                padding=2,
+                groups=c1,
+                bias=False
+            ),
+            nn.BatchNorm2d(c1),
+            nn.SiLU(inplace=True),
+
+            # 5x5 DWConv
+            nn.Conv2d(
+                c1,
+                c1,
+                kernel_size=5,
+                stride=1,
+                padding=2,
+                groups=c1,
+                bias=False
+            ),
+            nn.BatchNorm2d(c1),
+            nn.SiLU(inplace=True),
+
+            # Pointwise
+            nn.Conv2d(
+                c1,
+                c_half,
+                kernel_size=1,
+                bias=False
+            ),
+            nn.BatchNorm2d(c_half),
+            nn.SiLU(inplace=True)
+        )
+
+        # ---------------------------------------------------
+        # Feature Fusion
+        # ---------------------------------------------------
+        self.fuse = nn.Sequential(
+            nn.Conv2d(
+                c2,
+                c2,
+                kernel_size=1,
+                bias=False
+            ),
+            nn.BatchNorm2d(c2),
+            nn.SiLU(inplace=True)
+        )
+
+    def forward(self, x):
+
+        if self.debug:
+            print("\n=========== DKStem ===========")
+            print(f"Input        : {x.shape}")
+
+        # Branch A
+        b1 = self.branch1(x)
+
+        if self.debug:
+            print(f"Branch1 3×3  : {b1.shape}")
+
+        # Branch B
+        b2 = self.branch2(x)
+
+        if self.debug:
+            print(f"Branch2 5×5  : {b2.shape}")
+
+        # Concatenate
+        out = torch.cat((b1, b2), dim=1)
+
+        if self.debug:
+            print(f"Concat       : {out.shape}")
+
+        # Fuse
+        out = self.fuse(out)
+
+        if self.debug:
+            print(f"Output       : {out.shape}")
+            print("==============================\n")
+
+        return out
 
 # ----------------------------------
 # SPD Layer

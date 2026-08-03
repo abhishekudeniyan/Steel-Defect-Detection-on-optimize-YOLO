@@ -10,8 +10,8 @@ from collections import Counter, defaultdict
 # ============================================================
 import os
 
-dataset_img_path = "data\\processed\\images"  # Update this to your actual dataset path
-dataset_labels_path = "data\\processed\\labels"  # Update this to your actual labels path
+dataset_img_path = "data\\GC10_DET_YOLO\\images"  # Update this to your actual dataset path
+dataset_labels_path = "data\\GC10_DET_YOLO\\labels"  # Update this to your actual labels path
 images_path = os.path.join(dataset_img_path, "train")
 labels_path = os.path.join(dataset_labels_path, "train")
 
