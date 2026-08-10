@@ -1,23 +1,23 @@
-model: models\V2_DK_SPDHY_yolo11.yaml
+model: models\Baselineyolov8nano.yaml
 
 training:
   imgsz: 640
   batch: 8
-  epochs: 220
-  optimizer: AdamW
+  epochs: 500
+  optimizer: SGD
   lr0: 0.001
   mosaic: 0
   close_mosaic: 20
-  patience: 30
+  patience: 100
   workers: 2
-  amp: true
-  cos_lr: True #false for linear lr scheduler, true for cosine lr scheduler, BAsline YOLOv11 uses cosine lr scheduler, but YOLOv8 uses linear lr scheduler
+  amp: True
+  cos_lr: False #false for linear lr scheduler, true for cosine lr scheduler, BAsline YOLOv11 uses cosine lr scheduler, but YOLOv8 uses linear lr scheduler
   warmup_epochs: 5
     
 
 
 experiment:
-  name: GC10_Baseline_YOLO_v11n_640px_AdamW__220epochs
+  name: NEUDET__YOLO_v8n_SGD__500epochs
   seeds: [1]
   project_dir: runs/detect/experiments
 

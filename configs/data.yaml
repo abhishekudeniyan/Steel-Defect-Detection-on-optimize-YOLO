@@ -1,16 +1,12 @@
-path: D:\MY Projects\Steel Defect Detection\data\GC10_DET_YOLO
+path: D:\MY Projects\Steel Defect Detection\data\processed_v2
 train: images/train
 val: images/val
 test: images/test
-nc: 10
+nc: 6
 names:
-  0: Punching Hole
-  1: Welding Line
-  2: Crescent Gap
-  3: Water Spot
-  4: Oil Spot
-  5: Silk Spot
-  6: Inclusion
-  7: Rolled Pit
-  8: Crease
-  9: Waist Folding
+- crazing
+- inclusion
+- patches
+- pitted_surface
+- rolled-in_scale
+- scratches
