@@ -35,6 +35,52 @@
 
 # if __name__ == "__main__":
 #     main()
+# =========================================================
+# 📦 IMPORTS + SETUP
+# =========================================================
+import sys, os, random, time, gc
+from pathlib import Path
+import yaml
+import torch
+import pandas as pd
+
+# ---------------------------------------------------------
+# 🔥 PROJECT ROOT SETUP
+# ---------------------------------------------------------
+PROJECT_ROOT = next(
+    (p for p in [Path.cwd(), *Path.cwd().parents] 
+     if (p / "src").exists() and (p / "configs").exists()),
+    None,
+)
+if PROJECT_ROOT is None:
+    raise FileNotFoundError("Project root not found")
+
+if str(PROJECT_ROOT) not in sys.path:
+    sys.path.insert(0, str(PROJECT_ROOT))
+
+# ---------------------------------------------------------
+# 🔥 REGISTER CUSTOM MODULES
+# ---------------------------------------------------------
+import src
+import ultralytics.nn.tasks as _tasks
+import ultralytics.nn.modules as _modules
+
+from src.custom_modules import M_C3k2, WeightedConcat, HybridSPDConv_3
+from src.spd_conv import SPDConv, SPDHybrid, SPDHybrid_NO_Fuse, DKStem, SPDHybrid_old, SPDHybrid_NO_Fuse_old
+
+for name, cls in {
+    "M_C3k2": M_C3k2,
+    "WeightedConcat": WeightedConcat,
+    "HybridSPDConv_3": HybridSPDConv_3,
+    "SPDConv": SPDConv,
+    "SPDHybrid": SPDHybrid,
+    "SPDHybrid_NO_Fuse": SPDHybrid_NO_Fuse,
+    "SPDHybrid_old": SPDHybrid_old,
+    "SPDHybrid_NO_Fuse_old": SPDHybrid_NO_Fuse_old,
+    "DKStem": DKStem,
+}.items():
+    _tasks.__dict__[name] = cls
+    _modules.__dict__[name] = cls
 
 import sys
 from pathlib import Path
@@ -71,4 +117,4 @@ def analyze_model(model_path):
 
     print("\n==========================")
     print(f"Total Parameters: {total_params:,}")
-analyze_model("models/Baselineyolov8nano.yaml")
+analyze_model("models\V2_DK_SPDHY_yolo11.yaml")

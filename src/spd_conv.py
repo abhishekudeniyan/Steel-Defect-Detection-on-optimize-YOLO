@@ -227,7 +227,7 @@ class SPD2(nn.Module):
 # ----------------------------------
 # SPD Hybrid Block
 # ----------------------------------
-class SPDHybrid(nn.Module):
+class SPDHybrid_old(nn.Module):
     def __init__(self, c1, c2, debug=False):
         super().__init__()
 
@@ -296,7 +296,7 @@ class SPDHybrid(nn.Module):
 
         return out
 
-class SPDHybrid_NO_Fuse(nn.Module):
+class SPDHybrid_NO_Fuse_old(nn.Module):
     def __init__(self, c1, c2):
         super().__init__()
 
@@ -330,5 +330,123 @@ class SPDHybrid_NO_Fuse(nn.Module):
 
         b1 = self.branch1(x)
         b2 = self.branch2(x)
+
+        return torch.cat([b1, b2], dim=1)
+
+import torch
+import torch.nn as nn
+
+# --------------------------------------------------
+# SPD Hybrid Block (with 50/50 Channel Split)
+# --------------------------------------------------
+class SPDHybrid(nn.Module):
+    def __init__(self, c1, c2, debug=False):
+        super().__init__()
+
+        self.debug = debug
+        self.spd = SPD2(stride=2, debug=debug)
+
+        # ---- Channel Dimensions ----
+        c_mid = c1 * 4        # after SPD: 4 * C_in
+        c_split = c_mid // 2  # 50/50 split: 2 * C_in per branch
+        c_half = c2 // 2      # C_out / 2 per branch
+
+        # -------- Branch 1 (Pointwise 1x1) --------
+        self.branch1 = nn.Sequential(
+            nn.Conv2d(c_split, c_half, kernel_size=1, stride=1, bias=False),
+            nn.BatchNorm2d(c_half),
+            nn.SiLU()
+        )
+
+        # -------- Branch 2 (Depthwise 3x3 + Pointwise 1x1) --------
+        self.branch2 = nn.Sequential(
+            nn.Conv2d(c_split, c_split, kernel_size=3, padding=1, groups=c_split, bias=False),
+            nn.BatchNorm2d(c_split),
+            nn.SiLU(),
+
+            nn.Conv2d(c_split, c_half, kernel_size=1, bias=False),
+            nn.BatchNorm2d(c_half),
+            nn.SiLU()
+        )
+
+        # -------- Fusion --------
+        self.fuse = nn.Sequential(
+            nn.Conv2d(c2, c2, kernel_size=1, bias=False),
+            nn.BatchNorm2d(c2),
+            nn.SiLU()
+        )
+
+    def forward(self, x):
+        if self.debug:
+            print("\n===== SPDHybrid Forward =====")
+            print(f"[Input] {x.shape}")
+
+        # ---- Step 1: SPD ----
+        x = self.spd(x)  # [B, 4*c1, H/2, W/2]
+        if self.debug:
+            print(f"[SPD Output] {x.shape}")
+
+        # ---- Step 2: 50/50 Channel Split ----
+        c_split = x.shape[1] // 2
+        x1, x2 = torch.split(x, c_split, dim=1)  # Two [B, 2*c1, H/2, W/2] tensors
+        if self.debug:
+            print(f"[Split] x1: {x1.shape}, x2: {x2.shape}")
+
+        # ---- Step 3: Branches ----
+        b1 = self.branch1(x1)  # [B, c2/2, H/2, W/2]
+        b2 = self.branch2(x2)  # [B, c2/2, H/2, W/2]
+        if self.debug:
+            print(f"[Branch1: 1x1] {b1.shape}")
+            print(f"[Branch2: DW+PW] {b2.shape}")
+
+        # ---- Step 4: Concat & Fuse ----
+        out = torch.cat([b1, b2], dim=1)  # [B, c2, H/2, W/2]
+        out = self.fuse(out)              # [B, c2, H/2, W/2]
+
+        if self.debug:
+            print(f"[Fuse Output] {out.shape}")
+            print("=================================\n")
+
+        return out
+
+
+# --------------------------------------------------
+# SPD Hybrid Block (No Fusion Layer)
+# --------------------------------------------------
+class SPDHybrid_NO_Fuse(nn.Module):
+    def __init__(self, c1, c2):
+        super().__init__()
+
+        self.spd = SPD2(stride=2)
+
+        c_mid = c1 * 4        # after SPD: 4 * C_in
+        c_split = c_mid // 2  # 50/50 split: 2 * C_in per branch
+        c_half = c2 // 2      # C_out / 2 per branch
+
+        # Branch 1 (Pointwise)
+        self.branch1 = nn.Sequential(
+            nn.Conv2d(c_split, c_half, kernel_size=1, bias=False),
+            nn.BatchNorm2d(c_half),
+            nn.SiLU()
+        )
+
+        # Branch 2 (Spatial DW 3x3 + PW 1x1)
+        self.branch2 = nn.Sequential(
+            nn.Conv2d(c_split, c_split, kernel_size=3, padding=1, groups=c_split, bias=False),
+            nn.BatchNorm2d(c_split),
+            nn.SiLU(),
+
+            nn.Conv2d(c_split, c_half, kernel_size=1, bias=False),
+            nn.BatchNorm2d(c_half),
+            nn.SiLU()
+        )
+
+    def forward(self, x):
+        x = self.spd(x)
+        c_split = x.shape[1] // 2
+        x1, x2 = torch.split(x, c_split, dim=1)
+
+        b1 = self.branch1(x1)
+        b2 = self.branch2(x2)
 
         return torch.cat([b1, b2], dim=1)
